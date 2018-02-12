@@ -5,27 +5,43 @@ import org.scalatestplus.play.guice._
 import play.api.test.Helpers._
 import play.api.test._
 
-/**
- * Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- *
- * For more information, see https://www.playframework.com/documentation/latest/ScalaTestingWithScalaTest
- */
 class FizzbuzzControllerSpec extends PlaySpec with GuiceOneAppPerTest with Injecting {
 
   "FizzbuzzController" should {
+    //setup
+    val controller = new FizzbuzzController(stubControllerComponents())
 
-    "Return '1, 2, FIZZ!' when '3' is passed" in {
-      val controller = new FizzbuzzController(stubControllerComponents())
+    "Return '1, 2, FIZZ!' when '1 and 3' are passed" in {
+      //execute
+      val result = controller.setUpFizzbuzz(1, 3)
 
-      val result = controller.setUpFizzbuzz(3)
+      //assertions
+      result mustBe List("1", "2", "FIZZ!")
+    }
 
-      result mustBe {1, 2, "FIZZ!"}
-//      val home = controller.index().apply(FakeRequest(GET, "/"))
-//
-//      status(home) mustBe OK
-//      contentType(home) mustBe Some("text/html")
-//      contentAsString(home) must include ("Welcome to Play")
+    "Return '1, 2 , FIZZ!, 4 , BUZZ!' when '1 and 5' are passed in" in {
+      //execute
+      val result = controller.setUpFizzbuzz(1, 5)
+
+      //assertions
+      result mustBe List("1", "2", "FIZZ!", "4", "BUZZ!")
+    }
+
+    "Return error message when '0, 0' are passed in" in {
+      //execute
+      val result = controller.setUpFizzbuzz(0, 0)
+
+      //assertions
+      result mustBe List("ERROR: Don't pass in 0")
+    }
+
+    "Return length of 100 and 'FIZZBUZZ!' as 15th value in list when '1 and 100' are passed" in {
+      //execute
+      val result = controller.setUpFizzbuzz(1, 100)
+
+      //assertions
+      result.length mustBe 100
+      result.indexOf("FIZZBUZZ!") mustBe 14
     }
   }
 }
